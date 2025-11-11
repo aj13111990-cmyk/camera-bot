@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Camera Sender</title>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <h2>Camera Sender</h2>
+  <video id="myVideo" autoplay playsinline></video>
+  <p>Your ID: <span id="peerId"></span></p>
+  <p>Give this ID to the viewer device.</p>
+
+  <script>
+    const video = document.getElementById('myVideo');
+    const peer = new Peer(); // creates a new peer with a random ID
+    const idSpan = document.getElementById('peerId');
+
+    peer.on('open', id => {
+      idSpan.textContent = id;
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(stream => {
+        video.srcObject = stream;
+
+        // When viewer calls, send the stream
+        peer.on('call', call => {
+          call.answer(stream);
+        });
+      })
+      .catch(err => alert('Camera error: ' + err));
+  </script>
+</body>
+</html>

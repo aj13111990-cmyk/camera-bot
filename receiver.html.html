@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Camera Viewer</title>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <h2>Camera Viewer</h2>
+  <input id="targetId" placeholder="Enter sender ID">
+  <button id="connectBtn">Connect</button>
+  <video id="remoteVideo" autoplay playsinline></video>
+
+  <script>
+    const peer = new Peer();
+    const connectBtn = document.getElementById('connectBtn');
+    const remoteVideo = document.getElementById('remoteVideo');
+
+    connectBtn.onclick = () => {
+      const id = document.getElementById('targetId').value.trim();
+      if (!id) return alert('Enter sender ID');
+      const call = peer.call(id, null);
+      call.on('stream', stream => {
+        remoteVideo.srcObject = stream;
+      });
+    };
+  </script>
+</body>
+</html>
+
